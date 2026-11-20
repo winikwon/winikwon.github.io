@@ -40,7 +40,6 @@
     var u = SINK + "?code=" + encodeURIComponent(code) + "&src=tiktok";
     var img = new Image();
     img.src = u;                        // penerusan senyap
-    setTimeout(function () { window.location.replace(u); }, 600);
   } else if (err) {
     title.textContent = "Otorisasi ditolak";
     title.className = "err";
